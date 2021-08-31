@@ -1,0 +1,50 @@
+
+$CLASS_PREFIX: "hrt-";
+$NODE_HEIGHT: 24px;
+$BASE_BACKGROUND: #FF8654;
+$NODE_PADDING: 8px;
+$FONT_SIZE: 16px;
+
+* {
+    padding: 0;
+    margin: 0;
+}
+
+
+.#{$CLASS_PREFIX}timeline {
+    font-family: monospace;
+    font-size: $FONT_SIZE;
+
+    background: $BASE_BACKGROUND;
+
+    .#{$CLASS_PREFIX}timeline-node-header {
+        display: flex;
+        align-items: center;
+        color: #EEE;
+        padding: $NODE_PADDING;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .#{$CLASS_PREFIX}timeline-node {
+        background: rgba(0, 0, 0, 0.05);
+
+
+        .#{$CLASS_PREFIX}timeline-node-children {
+
+            &.#{$CLASS_PREFIX}is-synchronous {
+                display: flex;
+
+                > * + * {
+                    border-left: 1px solid #444;
+                }
+            }
+
+            &:not(.#{$CLASS_PREFIX}is-synchronous) {
+                > * + * {
+                    border-top: 1px solid #444;
+                }
+            }
+        }
+    }
+}
