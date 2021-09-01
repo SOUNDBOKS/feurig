@@ -20,7 +20,7 @@ async function sleep(ms: number) {
     await new Promise(resolve => setTimeout(resolve, ms))
 }
 
-let results = Feurig.measure("app", async () => {
+let feurig = Feurig.measure("app", async () => {
     await Promise.all(([2, 7, 0, 1, 8, 2, 7]).map(async e => {
         await Feurig.measure("A and B" + e, async () => {
             await Feurig.measure("A" + e, async () => await sleep(Math.random() * 1000))
@@ -33,11 +33,11 @@ let results = Feurig.measure("app", async () => {
     }))
 })
 
-results.then((logs: any) => {
+feurig.then(([_, timings]) => {
     const output = {
-        rootNode: logs,
-        start: logs.start,
-        end: logs.end,
+        rootNode: timings,
+        start: timings.start,
+        end: timings.end,
     }
 
     writeFile("flame.json", JSON.stringify(output), () => null)
