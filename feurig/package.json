@@ -1,0 +1,17 @@
+{
+  "name": "feurig",
+  "version": "0.0.0",
+  "main": "build/tsc/index.js",
+  "license": "MIT",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "@types/node": "^16.7.8",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2"
+  },
+  "repository": "https://github.com/SOUNDBOKS/feurig",
+  "scripts": {
+    "release:internal": "yarn publish --registry=https://npm.pkg.github.com"
+  }
+}
