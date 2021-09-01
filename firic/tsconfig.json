@@ -1,5 +1,8 @@
 {
     "compilerOptions": {
-        "types": ["node"]
-    }
+        "types": ["node"],
+        "declaration": true,
+        "outDir": "build/tsc"
+    },
+    "include": ["src"]
 }

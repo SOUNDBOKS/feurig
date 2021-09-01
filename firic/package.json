@@ -1,14 +1,13 @@
 {
   "name": "async-hook-test",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "build/tsc/index.js",
   "license": "MIT",
   "dependencies": {
-    "@types/node": "^16.7.8",
-    "d3-flame-graph": "^4.0.6",
-    "typescript": "^4.4.2"
   },
   "devDependencies": {
-    "ts-node": "^10.2.1"
+    "@types/node": "^16.7.8",
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2"
   }
 }

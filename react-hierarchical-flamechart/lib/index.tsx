@@ -29,12 +29,14 @@ export interface TimelineProps {
 export interface TimelineNodeProps {
     node: TimelineNode
     depth?: number
+    accumulatedOffset?: number
 }
 
-const TimelineNode = ({node, depth = 0 }: TimelineNodeProps) => {
+const TimelineNode = ({node, depth = 0, accumulatedOffset = 0 }: TimelineNodeProps) => {
     const metrics = useMetrics(node)
     const style: React.CSSProperties = {
         width: (metrics.relativeWidth * 100) + "vw",
+        marginLeft: (metrics.absoluteOffset - accumulatedOffset) * 100 + "vw",
     }
 
     return <div style={style} className={useClassNames("timeline-node")}>
@@ -42,7 +44,15 @@ const TimelineNode = ({node, depth = 0 }: TimelineNodeProps) => {
             { node.name }
         </div>
         <div className={useClassNames(["timeline-node-children", { "is-synchronous": metrics.childrenAreSynchronous }])}>
-            { node.children.map((child, i) => <TimelineNode key={i} node={child} depth={depth + 1}/>)}
+            { node.children.map((child, i) => {
+                let _accumulatedOffset = accumulatedOffset
+                if (metrics.childrenAreSynchronous) {
+
+                    let childMetrics = useMetrics(child)
+                    accumulatedOffset = childMetrics.absoluteOffset + childMetrics.relativeWidth
+                }
+                return <TimelineNode accumulatedOffset={_accumulatedOffset} key={i} node={child} depth={depth + 1}/>
+            }) }
         </div>
     </div>
 }

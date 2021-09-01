@@ -52,17 +52,15 @@ export function useOuterWidth() {
     return settings.data.end - settings.data.start
 }
 
-export function useMetrics(node: TimelineNode, parentNode?: TimelineNode) {
+export function useMetrics(node: TimelineNode) {
     const outerWidth = useOuterWidth()
     const nodeWidth = node.end - node.start
 
-    const relativeOffset = parentNode ?
-        (node.start - parentNode.start) / outerWidth
-        : (node.start - useSettings().data.start) / outerWidth
+    const absoluteOffset = (node.start - useSettings().data.start) / outerWidth
 
     return {
         relativeWidth: nodeWidth / outerWidth,
-        relativeOffset,
+        absoluteOffset,
         childrenAreSynchronous: calculateOverlap(node.children),
     }
 }
