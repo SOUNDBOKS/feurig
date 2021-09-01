@@ -44,5 +44,3 @@ feurig.then(([_, timings]) => {
 })
 ```
 
-### Contributing
-Idk. just write me I guess. No promises.
