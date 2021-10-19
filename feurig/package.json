@@ -1,16 +1,21 @@
 {
   "name": "@soundboks/feurig",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "main": "build/tsc/index.js",
   "license": "MIT",
   "dependencies": {},
   "devDependencies": {
+    "@types/mocha": "^9.0.0",
     "@types/node": "^16.7.8",
+    "mocha": "^9.1.3",
     "ts-node": "^10.2.1",
     "typescript": "^4.4.2"
   },
   "repository": "https://github.com/SOUNDBOKS/feurig",
   "scripts": {
-    "release:internal": "yarn publish --registry=https://npm.pkg.github.com --no-git-tag-version"
+    "test": "yarn mocha --require ts-node/register src/test/**test.ts",
+    "prerelease": "cp ../README.md . && yarn tsc",
+    "release:github": "yarn prerelease && yarn publish --registry=https://npm.pkg.github.com --no-git-tag-version",
+    "release:npm": "yarn prerelease && yarn publish --no-git-tag-version --access public"
   }
 }
