@@ -1,9 +1,11 @@
 {
     "compilerOptions": {
+        "experimentalDecorators": true,
         "types": ["node", "mocha"],
         "declaration": true,
         "strict": true,
-        "outDir": "build/tsc"
+        "outDir": "build/tsc",
+        "target": "ES5"
     },
     "include": ["src"]
 }

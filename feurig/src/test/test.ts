@@ -1,7 +1,8 @@
 
 import * as assert from "assert"
+import { prototype } from "events"
 
-import { explicitEnter, measure, TimingNode } from "../"
+import { alwaysMeasure, explicitEnter, measure, TimingNode } from "../"
 
 
 
@@ -13,7 +14,7 @@ function depth(node: TimingNode): number {
     }
 }
 
-describe("Feurig", () => {
+describe("Basics", () => {
     it("should handle recursion", async () => {
         async function fib(i: number): Promise<void> {
             if (i >= 10) return;
@@ -59,5 +60,32 @@ describe("Feurig", () => {
         const _ = explicitEnter("inner")
         
         assert.throws(end)
+    })
+})
+
+
+
+class Decorated {
+    @alwaysMeasure()
+    async fib(i: number) {
+        assert(this instanceof Decorated)
+        if (i == 1) return;
+        this.fib(i - 1)
+    }
+}
+
+describe("Decorators", () => {
+    it("should preserve 'this' in a decorated context", async () => {
+        const d = new Decorated()
+        const [_, timings] = await measure("root", () => d.fib(1))
+
+        assert.strictEqual(timings.children[0].name, "fib")
+    })
+
+    it("should handle recursion without problems", async () => {
+        const d = new Decorated()
+        const [_, timings] = await measure("root", () => d.fib(10))
+
+        assert.strictEqual(depth(timings), 11) // 10 + root
     })
 })

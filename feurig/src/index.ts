@@ -24,6 +24,18 @@ export async function measure<T>(name: string, cb: () => Promise<T>): Promise<[T
     return [ret, node as TimingNode]
 }
 
+export function alwaysMeasure() {
+    return function<B, F extends (...a: any[]) => Promise<B>>(target: any, name: string, descriptor: TypedPropertyDescriptor<F>) {
+        const inner = descriptor.value!
+        descriptor.value = (async function(...args: any[]) {
+            // Figure out a better way to type this
+            // @ts-ignore
+            const _this = this
+            const [_ret, _] = await measure(name, () => inner.apply(_this, args))
+            return _ret
+        }) as unknown as F
+    }
+}
 
 export function explicitEnter(name: string): () => TimingNode {
     let node: Partial<TimingNode> = { name, children: [], start: performance.now(), end: undefined }
