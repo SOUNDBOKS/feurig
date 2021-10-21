@@ -1,9 +1,7 @@
 
 import * as assert from "assert"
-import { prototype } from "events"
 
-import { alwaysMeasure, explicitEnter, measure, TimingNode } from "../"
-
+import { alwaysMeasure, explicitEnter, insertTimingNode, measure, TimingNode } from "../"
 
 
 function depth(node: TimingNode): number {
@@ -87,5 +85,65 @@ describe("Decorators", () => {
         const [_, timings] = await measure("root", () => d.fib(10))
 
         assert.strictEqual(depth(timings), 11) // 10 + root
+    })
+})
+
+describe("Manual inserts", () => {
+    it("should throw when trying to insert a node without a context", async () => {
+        assert.throws(() => insertTimingNode({
+            name: "",
+            start: 0,
+            end: 100,
+            children: []
+        }))
+    })
+    
+    it("should throw when trying to insert a node that finishes before it start", async () => {
+        const end = explicitEnter("root")
+
+        assert.throws(() => insertTimingNode({
+            name: "",
+            start: performance.now(),
+            end: 0,
+            children: [],
+        }))
+
+        const _ = end()
+    })
+
+    it("should throw when trying to insert a node not contained in the outer context", async () => {
+        const end = explicitEnter("root")
+
+        assert.throws(() => insertTimingNode({
+            name: "",
+            start: 0,
+            end: performance.now(),
+            children: []
+        }), "start is in the past")
+
+
+        assert.throws(() => insertTimingNode({
+            name: "",
+            start: 0,
+            end: performance.now() + 1000,
+            children: [],
+        }), "end is in the future")
+
+        const _ = end()
+    })
+
+    it("should actually attach a node", async () => {
+        const end = explicitEnter("root")
+        const node = {
+            name: "",
+            start: performance.now(),
+            end: performance.now(),
+            children: [],
+        }
+
+        insertTimingNode(node)
+
+        const timings = end()
+        assert.deepStrictEqual(timings.children[0], node)
     })
 })
